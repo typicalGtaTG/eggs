@@ -1,0 +1,86 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v1",
+        "update_url": null
+    },
+    "exported_at": "2021-05-08T20:27:50+05:30",
+    "name": "Dashactyl",
+    "author": "mannynilam@gmail.com",
+    "description": "An egg for hosting dashactyl on pterodactyl.\r\n\r\nWARNING:\r\nAfter installation, change the port to the default port of your pterodactyl server. This is not a good way to host dashactyl. \r\n\r\nThe variables don't work yet due to dashactyl using json for settings.",
+    "features": null,
+    "images": [
+        "quay.io\/parkervcp\/pterodactyl-images:debian_nodejs-14"
+    ],
+    "file_denylist": [],
+    "startup": "echo \"================ \\n Assuming you have already configured settings.json \\n ================\"; \/usr\/local\/bin\/node \/home\/container\/index.js",
+    "config": {
+        "files": "{\r\n    \"Soon!\": {\r\n        \"parser\": \"file\",\r\n        \"find\": {\r\n            \"\\\"port\\\":\": \"\\\"port\\\": {{server.build.default.port}}\",\r\n            \"\\\"domain\\\":\": \"\\\"domain\\\": \\\"{{server.build.env.PD}}\\\",\",\r\n            \"\\\"key\\\":\": \"\\\"key\\\": \\\"{{server.build.env.PK}}\\\"\",\r\n            \"\\\"id\\\":\": \"\\\"id\\\": \\\"{{server.build.env.DID}}\\\",\",\r\n            \"\\\"secret\\\": \\\"discord oauth2 application secret\\\",\": \"\\\"secret\\\": \\\"{{server.build.env.DSEC}}\\\",\",\r\n            \"\\\"link\\\":\": \"\\\"link\\\": \\\"{{server.build.env.DLINK}}\\\",\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"The dashboard has successfully loaded on port\"\r\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# Dashactyl Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\necho \"==========================================\"\r\necho \"==    Dashactyl Installation Script     ==\"\r\necho \"==             By Arpan Sen             ==\"\r\necho \"==========================================\"\r\n\r\nbanner()\r\n{\r\n  echo \"+------------------------------------------+\"\r\n  echo \"|          Script Logger by Arpan Sen      |\"\r\n  printf \"| %-40s |\\n\" \"`date`\"\r\n  echo \"|                                          |\"\r\n  printf \"|`tput bold` %-40s `tput sgr0`|\\n\" \"$@\"\r\n  echo \"+------------------------------------------+\"\r\n}\r\n\r\nbanner \"Updating Package Repositories, Upgrading Packages. \\n This can take few minutes.\"\r\napt update && apt -y upgrade\r\nbanner \"Installing required packages.\"\r\napt install -y git curl jq file unzip make gcc g++ python python-dev libtool wget\r\nbanner \"Making Important Directories.\"\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server\r\n\r\n# Download and extract dashactyl\r\n# https:\/\/github.com\/real2two\/dashactyl\/archive\/refs\/tags\/0.3.6.zip\r\nbanner \"Getting files from github.\"\r\ngit clone https:\/\/github.com\/real2two\/dashactyl.git\r\nbanner \"Putting files into correct directories.\"\r\nmv \/mnt\/server\/dashactyl\/* \/mnt\/server\/\r\nbanner \"Removing junk files and folders.\"\r\nrm -r \/mnt\/server\/dashactyl\r\n\r\nbanner \"Checking if installable packages exist...\"\r\nif [ -f \/mnt\/server\/package.json ]; then\r\nbanner \"Installable packages exist.\"\r\nbanner \"Installing packages, This many take a while.\"\r\n    \/usr\/local\/bin\/npm install --production\r\nfi\r\n\r\necho \"==========================================\"\r\necho \"==    Dashactyl Installation Script     ==\"\r\necho \"==             By Arpan Sen             ==\"\r\necho \"==========================================\"\r\nbanner \"Installation finished.\"\r\necho \"change the port to the default port of your pterodactyl server. This is not a good way to host dashactyl. \\n The variables don't work yet due to dashactyl using json for settings.\"\r\nexit 0",
+            "container": "node:14-buster-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Version",
+            "description": "Specify the version on dashactyl you want to install",
+            "env_variable": "D_VERSION",
+            "default_value": "0.3.6",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|string|max:20"
+        },
+        {
+            "name": "Pterodactyl Domain",
+            "description": "The domain of your Pterodactyl Panel. eg:. https:\/\/panel.example.com",
+            "env_variable": "PD",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "string|max:100"
+        },
+        {
+            "name": "Pterodactyl API Key",
+            "description": "Application API Key of your pterodactyl panel with all read & writes enabled",
+            "env_variable": "PK",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "string|max:200"
+        },
+        {
+            "name": "Discord Application ID",
+            "description": "Your Oauth2 Application ID from discord.",
+            "env_variable": "DID",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "string|max:200"
+        },
+        {
+            "name": "Discord Application Secret",
+            "description": "Your Oauth2 discord application secret.",
+            "env_variable": "DSEC",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "string|max:200"
+        },
+        {
+            "name": "Discord Application Link",
+            "description": "discord oauth2 application link without the '\/callback'. This would be the link to your dashactyl installation.",
+            "env_variable": "DLINK",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "string|max:200"
+        }
+    ]
+}
